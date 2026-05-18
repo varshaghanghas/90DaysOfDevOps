@@ -1,6 +1,6 @@
-# Day 02 – Linux Architecture, Processes, and systemd
+# Day 2 - Linux Fundamentals & Architecture
 
-**Date:** May 17, 2026 
+**Date:** May 17, 2026  
 **Phase:** 1
 
 ---
@@ -74,6 +74,7 @@ Linux comes in different versions/distributions:
 ---
 
 # Why Linux for DevOps?
+
 DevOps Engineers must understand:
 - Operating Systems
 - Servers
@@ -322,9 +323,9 @@ Shows real-time system resource usage.
 
 ---
 
-# Linux Commands Practiced
+# Linux Commands Practice (In Sequence)
 
-## pwd
+## 1. Check Current Directory
 
 ```bash
 pwd
@@ -335,23 +336,96 @@ Shows:
 
 ---
 
-## cd
+## 2. Change Directory
 
 ```bash
-cd
+cd ~
 ```
 
-Changes directory.
+Moves to home directory.
+
+Example:
+```bash
+cd /etc
+```
 
 ---
 
-## cat
+## 3. List Files & Directories
 
 ```bash
-cat filename.txt
+ls
 ```
 
-Displays file content.
+### Long Listing
+
+```bash
+ls -l
+```
+
+### Show Hidden Files
+
+```bash
+ls -la
+```
+
+### File Types in `ls`
+
+| Symbol | Meaning |
+|---|---|
+| d | directory |
+| l | link |
+| - | regular file |
+
+---
+
+## 4. Create Directory
+
+```bash
+mkdir demo
+```
+
+### Create Nested Directories
+
+```bash
+mkdir -p demo/test
+```
+
+`-p` creates parent directories if they don't exist.
+
+---
+
+## 5. Move into Directory
+
+```bash
+cd demo
+```
+
+---
+
+## 6. Create File
+
+```bash
+touch hello.txt
+```
+
+Creates empty file.
+
+---
+
+## 7. Write into File
+
+```bash
+echo "Hello Linux" > hello.txt
+```
+
+---
+
+## 8. Read File Content
+
+```bash
+cat hello.txt
+```
 
 ### Example
 
@@ -363,35 +437,56 @@ Shows Linux distribution information.
 
 ---
 
-## echo
+## 9. Edit File using Vim
 
 ```bash
-echo "hello"
+vim hello.txt
 ```
 
-Prints text/output.
+### Insert Mode
+
+Press:
+```text
+i
+```
+
+### Save & Exit
+
+```text
+:wq
+```
 
 ---
 
-## ls
+## 10. Read First Lines of File
 
 ```bash
-ls
+head hello.txt
 ```
 
-Lists files/directories.
+### Read First N Lines
 
-### File Types in ls
-
-| Symbol | Meaning |
-|---|---|
-| d | directory |
-| l | link |
-| - | regular file |
+```bash
+head -n 2 hello.txt
+```
 
 ---
 
-## df -h
+## 11. Read Last Lines of File
+
+```bash
+tail hello.txt
+```
+
+### Read Last N Lines
+
+```bash
+tail -n 2 hello.txt
+```
+
+---
+
+## 12. Check Disk Space
 
 ```bash
 df -h
@@ -401,7 +496,7 @@ Shows disk space usage.
 
 ---
 
-## free -h
+## 13. Check RAM Usage
 
 ```bash
 free -h
@@ -411,112 +506,57 @@ Shows RAM/memory usage.
 
 ---
 
-## date
+## 14. Check Date & Time
 
 ```bash
 date
 ```
 
-Displays current date/time.
-
 ---
 
-## uptime
+## 15. Check System Uptime
 
 ```bash
 uptime
 ```
 
-Shows system running time.
+Shows how long system has been running.
 
 ---
 
-# mkdir Command
-
-## Create Directory
+## 16. Count Lines in File
 
 ```bash
-mkdir demo
+wc -l hello.txt
 ```
 
-## Create Parent Directories
+Or:
 
 ```bash
-mkdir -p demo/test
-```
-
-`-p` creates parent directories if they don't exist.
-
----
-
-# touch Command
-
-```bash
-touch hello.txt
-```
-
-Creates empty file.
-
----
-
-# Writing into File
-
-```bash
-echo "text" > hello.txt
-```
-
-Writes text into file.
-
----
-
-# Vim Editor
-
-```bash
-vim hello.txt
-```
-
-### Insert Mode
-Press:
-```text
-i
-```
-
-### Save & Exit
-```text
-:wq
+cat hello.txt | wc -l
 ```
 
 ---
 
-# head Command
-
-## First 10 lines
+## 17. Run Command in Background
 
 ```bash
-head hello.txt
+command &
 ```
 
-## First N lines
-
-```bash
-head -n 2 hello.txt
-```
+`&` sends process to background.
 
 ---
 
-# tail Command
-
-## Last 10 lines
+## 18. Run Process using nohup
 
 ```bash
-tail hello.txt
+nohup command &
 ```
 
-## Last N lines
-
-```bash
-tail -n 2 hello.txt
-```
+### Meaning
+- "No Hang Up"
+- Process keeps running after terminal closes.
 
 ---
 
@@ -528,7 +568,8 @@ tail -n 2 hello.txt
 docker run -itd ubuntu
 ```
 
-### Meaning
+### Meaning of Flags
+
 | Flag | Meaning |
 |---|---|
 | -i | interactive |
@@ -537,52 +578,12 @@ docker run -itd ubuntu
 
 ---
 
-# Access Running Container
+## Access Running Container
 
 ```bash
 docker exec -it <container-id> bash
 ```
 
 Opens bash shell inside container.
-
----
-
-# nohup Command
-
-```bash
-nohup command &
-```
-
-Runs process in background.
-
-### Meaning
-- "No Hang Up"
-- Process keeps running even after terminal closes.
-
----
-
-# wc Command
-
-## Count Lines
-
-```bash
-wc -l filename.txt
-```
-
-Or:
-
-```bash
-cat filename.txt | wc -l
-```
-
----
-
-# Run Command in Background
-
-```bash
-command &
-```
-
-`&` sends process to background.
 
 ---
