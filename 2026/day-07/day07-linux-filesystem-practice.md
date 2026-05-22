@@ -228,3 +228,66 @@ Place screenshots inside the `images/` directory.
 3. How do you check disk usage?
 4. How do you restart a service?
 5. How do you test nginx configuration?
+
+## 1. Where are nginx logs stored?
+
+```bash
+/var/log/nginx/
+```
+
+Main log files:
+
+```bash
+/var/log/nginx/access.log
+/var/log/nginx/error.log
+```
+
+---
+
+## 2. Which directory stores configs?
+
+```bash
+/etc/
+```
+
+NGINX config location:
+
+```bash
+/etc/nginx/
+```
+
+---
+
+## 3. How do you check disk usage?
+
+```bash
+df -h
+```
+
+Check directory sizes:
+
+```bash
+du -sh /*
+```
+
+---
+
+## 4. How do you restart a service?
+
+```bash
+systemctl restart nginx
+```
+
+Inside Docker container:
+
+```bash
+service nginx restart
+```
+
+---
+
+## 5. How do you test nginx configuration?
+
+```bash
+nginx -t
+```
