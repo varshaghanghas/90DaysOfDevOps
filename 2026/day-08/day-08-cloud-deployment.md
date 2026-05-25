@@ -11,9 +11,6 @@ Launch an AWS EC2 instance, connect using SSH, install Nginx, configure security
 - Used Ubuntu Server
 - Downloaded `.pem` key file for SSH access
 
-## Snapshot
-Add screenshot here.
-
 ---
 
 # Step 2: Connect to EC2 via SSH
@@ -22,9 +19,6 @@ Add screenshot here.
 ssh -i your-key.pem ubuntu@44.213.124.51
 ```
 
-## Snapshot
-Add screenshot here.
-
 ---
 
 # Step 3: Update Packages
@@ -32,9 +26,6 @@ Add screenshot here.
 ```bash
 sudo apt update
 ```
-
-## Snapshot
-Add screenshot here.
 
 ---
 
@@ -50,9 +41,6 @@ sudo apt install nginx -y
 systemctl status nginx
 ```
 
-## Snapshot
-Add screenshot here.
-
 ---
 
 # Step 5: Verify Nginx Locally
@@ -67,9 +55,6 @@ Output:
 This is first nginx page by VG
 ```
 
-## Snapshot
-Add screenshot here.
-
 ---
 
 # Step 6: Verify Nginx Using Public IP
@@ -77,9 +62,6 @@ Add screenshot here.
 ```bash
 curl http://44.213.124.51
 ```
-
-## Snapshot
-Add screenshot here.
 
 ---
 
@@ -92,9 +74,6 @@ Added inbound rules:
 | HTTP | 80 | 0.0.0.0/0 |
 | SSH | 22 | Your Public IP/32 |
 
-## Snapshot
-Add screenshot here.
-
 ---
 
 # Step 8: Verify Website in Browser
@@ -106,8 +85,13 @@ http://44.213.124.51
 ```
 
 ## Snapshot
-Add screenshot here.
+EC@ Instance:
+
 ![EC2 Instance](../images/EC2-Instancepng.png)
+
+
+nginx running:
+
 ![Nghinx Home Page](../images/nginxHomePage.png)
 
 ---
