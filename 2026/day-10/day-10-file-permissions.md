@@ -124,6 +124,7 @@ Output:
 
 ![List](./img/Picture5.png)
 
+In a read-only file, you cannot save and exit using `:wq`. You must force quit using `:q!` and then press `Enter`. 
 
 ### Practiced
 
