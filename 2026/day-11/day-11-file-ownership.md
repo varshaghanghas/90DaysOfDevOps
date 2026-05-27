@@ -120,6 +120,97 @@ group while file created:
 
 ---
 
+## Task 5: Recursive Ownership
+
+### 1. Create Directory Structure
+```bash
+mkdir -p heist-project/vault
+mkdir -p heist-project/plans
+touch heist-project/vault/gold.txt
+touch heist-project/plans/strategy.conf
+```
+
+### 2. Create Group
+```bash
+sudo groupadd planners
+```
+
+### 3. Change Ownership Recursively
+Changed ownership of the entire `heist-project/` directory:
+
+- **Owner:** professor
+- **Group:** planners
+- Used recursive flag `-R`
+
+```bash
+chown professor:planners -R heist-project/
+```
+
+### 4. Verify Ownership Changes
+```bash
+ls -lR heist-project/
+```
+
+## Snapshot
+Output:
+
+![List](./img/Picture6.png)
+
+---
+
+## Task 6: Practice Challenge
+
+### 1. Create Users
+```bash
+# Users already created in Day 9:
+tokyo
+berlin
+nairobi
+```
+
+### 2. Create Groups
+```bash
+groupadd vault-team
+groupadd tech-team
+```
+
+### 3. Create Directory
+```bash
+mkdir bank-heist/
+```
+
+### 4. Create 3 files inside `bank-heist`
+```bash
+touch bank-heist/access-codes.txt
+touch bank-heist/blueprints.pdf
+touch bank-heist/escape-plan.txt
+```
+
+## Snapshot
+Output:
+
+![List](./img/Picture7.png)
+
+### 5. Set different ownership:
+   - `access-codes.txt` → owner: `tokyo`, group: `vault-team`
+   - `blueprints.pdf` → owner: `berlin`, group: `tech-team`
+   - `escape-plan.txt` → owner: `nairobi`, group: `vault-team`
+
+```bash
+chown tokyo:vault-team access-codes.txt
+chown berlin:tech-team blueprints.pdf
+chown nairobi:vault-team escape-plan.txt
+```
+
+**Verify:** `ls -l bank-heist/`
+
+## Snapshot
+Output:
+
+![List](./img/Picture8.png)
+
+---
+
 # Commands Learned
 
 ```bash
