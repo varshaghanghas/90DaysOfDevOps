@@ -1,4 +1,3 @@
-````md
 # Day 12 – Breather & Revision (Days 01–11)
 
 ## Day 1 – Introduction to DevOps & Cloud Engineering
@@ -298,5 +297,3 @@ chown owner:newgroup filename
 -rw-r--r-- 1 owner group size date filename
 ```
 
-```
-```
