@@ -309,6 +309,8 @@ or
 netstat -tulpn
 ```
 
+![Script Screenshot](./img/BashScript.png)
+
 ## Firewall
 
 Controls network traffic entering and leaving systems.
