@@ -17,13 +17,6 @@ Understand how devices are addressed on the Internet and how AWS networking work
 - Browser connects to the server using the returned IP.
 - Webpage loads.
 
-## DNS Resolution Flow
-
-```text
-192.168.1.10
-     ↓
-```
-
 # DNS (Domain Name System)
 
 DNS converts domain names into IP addresses.
