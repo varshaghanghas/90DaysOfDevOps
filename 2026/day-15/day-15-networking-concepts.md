@@ -288,15 +288,25 @@ Example:
 
 | Service | Port |
 |----------|------|
+| SSH | 22 |
 | HTTP | 80 |
 | HTTPS | 443 |
-| SSH | 22 |
 | SMTP | 25 |
+| DNS | 53 |
+| MySQL | 3306 |
+| Redis | 6379 |
+| MongoDB | 27017 |
 
 ### View Open Ports
 
-```text
+```bash
 ss -tulpn
+```
+
+or
+
+```bash
+netstat -tulpn
 ```
 
 ## Firewall
