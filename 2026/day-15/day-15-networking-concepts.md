@@ -24,7 +24,7 @@ DNS converts domain names into IP addresses.
 Example:
 
 ```text
-google.com
+google.com 
      ↓
 142.x.x.x
 ```
