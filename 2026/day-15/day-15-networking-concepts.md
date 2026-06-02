@@ -6,132 +6,23 @@ Understand how devices are addressed on the Internet and how AWS networking work
 
 ---
 
-# IP Address
+# Task 1: DNS - How Names Become IPs
+## What happens when you type google.com in a browser?
+- Browser checks local DNS cache.
+- Request is sent to a DNS Resolver.
+- Resolver queries Root DNS Server.
+- Root DNS directs to the TLD Server (.com).
+- TLD Server directs to the Authoritative DNS Server.
+- Authoritative DNS Server returns the IP address.
+- Browser connects to the server using the returned IP.
+- Webpage loads.
 
-An IP Address uniquely identifies a device on a network.
-
-Example:
-
-```text
-192.168.1.10
-```
-
----
-
-# Internet Protocol (IP)
-
-Defines rules for:
-
-- Addressing
-- Routing
-- Packet Delivery
-
----
-
-# IPv4
-
-IPv4 uses a 32-bit address.
-
-Example:
+## DNS Resolution Flow
 
 ```text
 192.168.1.10
+     ↓
 ```
-
-Total possible addresses:
-
-```text
-4.3 Billion Addresses
-```
-
----
-
-# IPv6
-
-IPv6 uses a 128-bit address.
-Provides virtually unlimited addresses.
-
-Example:
-
-```text
-2001:db8::1
-```
-
-Benefits:
-
-- Massive address space
-- Better scalability
-
-
----
-
-# Subnet
-
-A subnet is a logical subdivision of a network.
-
-Benefits:
-
-- Better organization
-- Better security
-- Efficient IP allocation
-
----
-
-# CIDR
-
-Classless Inter-Domain Routing.
-
-Example:
-
-```text
-192.168.1.0/24
-```
-
-Formula:
-
-```text
-Number of IPs = 2^(32 - n)
-```
-
-Where:
-
-```text
-n = CIDR value
-```
-
-Examples:
-
-| CIDR | IP Count |
-|--------|----------|
-| /24 | 256 |
-| /16 | 65,536 |
-| /8 | 16,777,216 |
-
----
-
-# Network Address
-
-First IP in a subnet.
-
-Example:
-
-```text
-192.168.1.0
-```
-
----
-
-# Broadcast Address
-
-Last IP in a subnet.
-
-Example:
-
-```text
-192.168.1.255
-```
-
----
 
 # DNS (Domain Name System)
 
@@ -189,6 +80,16 @@ Webpage Loads
 
 # Common DNS Components
 
+## DNS Record Types 
+
+| Record | Purpose |
+|--------|----------|
+| A | Maps domain to IPv4 address |
+| AAAA | Maps domain to IPv6 address |
+| CNAME | Alias of another domain |
+| MX | Mail server record |
+| NS | Name server record |
+
 ## Root DNS
 
 Knows TLD locations.
@@ -209,15 +110,204 @@ Examples:
 
 Stores actual DNS records.
 
+
+
+# Task 2: IP Addressing
+## What is an IP Address?
+
+An IP Address uniquely identifies a device on a network.
+
+Example:
+
+```text
+192.168.1.10
+```
+
 ---
 
-# Internet Security
+# Internet Protocol (IP)
+
+Defines rules for:
+
+- Addressing
+- Routing
+- Packet Delivery
+
+---
+
+# IPv4
+
+IPv4 uses a 32-bit address.
+
+Example:
+
+```text
+192.168.1.10
+```
+
+Total possible addresses:
+
+```text
+4.3 Billion Addresses
+```
+
+---
+
+# IPv6
+
+IPv6 uses a 128-bit address.
+Provides virtually unlimited addresses.
+
+Example:
+
+```text
+2001:db8::1
+```
+
+Benefits:
+
+- Massive address space
+- Better scalability
+
+# Public vs Private IP
+
+| Type | Example |
+|--------|----------|
+| Public | 8.8.8.8 |
+| Private | 192.168.1.10 |
+
+# Private IP Ranges
+
+```text
+10.0.0.0 – 10.255.255.255
+172.16.0.0 – 172.31.255.255
+192.168.0.0 – 192.168.255.255
+```
+
+Find Your IP:
+
+```text
+ip addr show
+```
+
+---
+# Task 3: CIDR & Subnetting
+
+## Subnet
+
+A subnet is a logical subdivision of a network.
+
+Benefits:
+
+- Better organization
+- Better security
+- Efficient IP allocation
+
+---
+
+## CIDR
+
+Classless Inter-Domain Routing.
+
+Example:
+
+```text
+192.168.1.0/24
+```
+
+Formula:
+
+```text
+Number of IPs = 2^(32 - n)
+```
+
+Where:
+
+```text
+n = CIDR value
+```
+
+Examples:
+
+| CIDR | Total IPs | Usable Hosts |
+|--------|----------|----------|
+| /24 | 256 | 254 |
+| /16 | 65,536 | 65534 |
+| /28 | 16 | 14 |
+
+---
+
+# Network Address
+
+First IP in a subnet.
+
+Example:
+
+```text
+192.168.1.0
+```
+
+---
+
+# Broadcast Address
+
+Last IP in a subnet.
+
+Example:
+
+```text
+192.168.1.255
+```
+
+## Why Do We Subnet? 
+
+Subnetting helps:
+
+- Reduce broadcast traffic
+- Improve security
+- Improve network management
+- Optimize IP utilization
+
+---
+
+---
+
+# Task 4: Ports & Network Security
+
+## What is a Port?
+A port is a communication endpoint.
+
+Think:
+
+IP Address = Building
+
+```text
+Port = Room Number
+```
+
+Example:
+```text
+10.0.0.5:443
+```
+
+# Common Ports
+
+| Service | Port |
+|----------|------|
+| HTTP | 80 |
+| HTTPS | 443 |
+| SSH | 22 |
+| SMTP | 25 |
+
+### View Open Ports
+
+```text
+ss -tulpn
+```
 
 ## Firewall
 
-Controls network traffic.
-
----
+Controls network traffic entering and leaving systems.
 
 ## Ingress
 
@@ -226,8 +316,6 @@ Incoming traffic.
 ```text
 Internet → Server
 ```
-
----
 
 ## Egress
 
@@ -254,17 +342,6 @@ SSL is outdated.
 
 ---
 
-# Common Ports
-
-| Service | Port |
-|----------|------|
-| HTTP | 80 |
-| HTTPS | 443 |
-| SSH | 22 |
-| SMTP | 25 |
-
----
-
 # Port
 
 Virtual communication endpoint.
@@ -284,15 +361,43 @@ Example:
 
 ---
 
-# AWS VPC
+# Task 5: Troubleshooting
 
-Virtual Private Cloud.
+```bash
+curl http://myapp.com:8080
+```
+
+Networking concepts involved:
+
+- DNS Resolution
+- IP Routing
+- TCP Connection
+- Port 8080 Access
+- Server Response
+
+### App Cannot Reach Database at 10.0.1.50:3306
+
+Check:
+
+- Network connectivity
+- Database service status
+- Firewall rules
+- Security groups
+- Route tables
+- Correct hostname/IP
+- Port availability
+
+# AWS VPC Fundamentals
+
+## VPC
+
+VPC (Virtual Private Cloud) is a private isolated network in AWS.
 
 A private network inside AWS.
 
 ---
 
-# Public Subnet
+## Public Subnet
 
 Accessible from the Internet.
 
@@ -303,7 +408,7 @@ Examples:
 
 ---
 
-# Private Subnet
+## Private Subnet
 
 Not directly accessible from the Internet.
 
@@ -314,13 +419,13 @@ Examples:
 
 ---
 
-# Internet Gateway
+## Internet Gateway
 
 Provides Internet access to public subnets.
 
 ---
 
-# NAT Gateway
+## NAT Gateway
 
 Allows private resources to access the Internet without exposing them publicly.
 
@@ -334,7 +439,7 @@ Internet
 
 ---
 
-# Route Table
+## Route Table
 
 Controls how traffic moves inside a VPC.
 
@@ -346,7 +451,7 @@ Contains routes for:
 
 ---
 
-# System Design
+## System Design
 
 System Design is the process of planning a system before implementation.
 
@@ -498,12 +603,17 @@ In-memory datastore used for:
 
 # Key Takeaways
 
-- IPv4 is limited; IPv6 solves address exhaustion
-- CIDR defines subnet size
-- DNS converts domains to IPs
-- TLS secures communication
-- Firewalls control ingress and egress traffic
-- Public subnets are internet-facing
-- Private subnets are protected
-- NAT Gateway provides outbound internet access
-- Route tables control traffic flow
+- DNS converts domain names into IP addresses
+- IPv4 is limited; IPv6 solves address exhaustion.
+- CIDR defines subnet size and host capacity.
+- Ports identify services running on a system.
+- Firewalls control ingress and egress traffic.
+- TLS secures communication.
+- AWS VPC provides isolated networking.
+- Public and private subnets improve security.
+- NAT Gateway enables secure outbound internet access.
+- Route tables control traffic flow.
+- Load balancers improve availability.
+- Kubernetes automates container orchestration.
+- Monitoring helps maintain application health.
+- Redis improves performance through caching
