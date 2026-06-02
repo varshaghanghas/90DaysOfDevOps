@@ -7,6 +7,7 @@ Understand how devices are addressed on the Internet and how AWS networking work
 ---
 
 # Task 1: DNS - How Names Become IPs
+
 ## What happens when you type google.com in a browser?
 - Browser checks local DNS cache.
 - Request is sent to a DNS Resolver.
