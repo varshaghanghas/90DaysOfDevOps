@@ -376,6 +376,7 @@ Now, let's find the exact commit hash ID for that second commit (`"hotfix: resol
 git log feature-hotfix --oneline
 ```
 output will list the commits:
+
 ![git checkout devops error](./img/Picture7.png)
 
 ```bash
@@ -413,6 +414,7 @@ git log --graph
 ```
 
 Snapshot of output:
+
 ![git log --graph](./img/Picture8.png)
 ![git log --graph](./img/Picture8_1.png)
 ![git log --graph](./img/Picture8_2.png)
