@@ -1,7 +1,7 @@
 # Day 23 – Git Branching & Working with GitHub
 
 ## Reference Repository
-For Day 22, I created my Git practice repository:
+For Day 23, I created my Git practice repository:
 
 **GitForDevops:** 🔗 https://github.com/varshaghanghas/GitForDevops
 **Command reference file:** https://github.com/varshaghanghas/GitForDevops/blob/main/git-commands.md
