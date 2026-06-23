@@ -5,15 +5,6 @@ Today's goal is to **write Dockerfiles and build custom images**.
 
 This is the skill that separates someone who uses Docker from someone who actually ships with Docker.
 
----
-
-## Expected Output
-- A markdown file: `day-31-dockerfile.md`
-- All Dockerfiles you create
-
----
-
-## Challenge Tasks
 
 ### Task 1: Your First Dockerfile
 1. Create a folder called `my-first-image`
