@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: wordpress_db
+    restart: always
+    environment:
+      # # MySQL needs a non-empty root password to initialize properly for Task 4
+      # MYSQL_ROOT_PASSWORD: rootpassword
+      # MYSQL_DATABASE: wordpress
+      # MYSQL_USER: wp_user
+      # MYSQL_PASSWORD: wppassword
+
+      # task 5
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    container_name: wordpress_app
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      # USED for Task 4
+      # WORDPRESS_DB_USER: wp_user
+      # WORDPRESS_DB_PASSWORD: wppassword
+      # WORDPRESS_DB_NAME: wordpress
+
+      # Task 5
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+
+volumes:
+  db_data:
