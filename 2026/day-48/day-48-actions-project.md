@@ -1,24 +1,39 @@
 # Day 48 – GitHub Actions Project: End-to-End CI/CD Pipeline
 
-## Task
-You've learned workflows, triggers, secrets, Docker builds, reusable workflows, and advanced events. Today you **put it all together** in one project — a complete, production-style CI/CD pipeline that builds, tests, and deploys using everything you've learned from Day 40 to Day 47.
+Today, I brought everything together by building an **end-to-end CI/CD pipeline** that resembles how modern software is built, tested, packaged, and prepared for deployment.
+Today's focus was on building a **Production-Style CI/CD Pipeline with GitHub Actions**.
 
-This is your GitHub Actions capstone.
+## 🏗️ Project Architecture Overview
+
+1. **Pull Request (CI) Workflow**: Triggers on PRs to main. It handles linting, testing, and security scanning.
+2. **Release & Deployment (CD) Workflow**: Triggers on merges to main. It builds a Docker image, pushes it to GitHub Packages (GHCR), and simulates a deployment using environments and approvals.
+
+```text
+[ Developer Pull Request ] 
+       │
+       ▼
+┌────────────────────────────────────────────────────────┐
+│ 1. CI Workflow (PR Target)                             │
+│ ───► Code Linting ───► Unit Tests ───► Security Scan   │
+└───────────────────────┬────────────────────────────────┘
+                        │ (Merge to main)
+                        ▼
+┌────────────────────────────────────────────────────────┐
+│ 2. CD Workflow (Main Branch)                           │
+│ ───► Docker Build & Tag ───► Push to GHCR              │
+└───────────────────────┬────────────────────────────────┘
+                        │
+                        ▼
+┌────────────────────────────────────────────────────────┐
+│ 3. Deployment (Environment Gate)                       │
+│ ───► Manual Approval ───► Simulated Production Deploy  │
+└────────────────────────────────────────────────────────┘
+```
 
 ---
-
-## Expected Output
-- A GitHub repo with a working app, Dockerfile, and complete CI/CD pipeline
-- At least 3 workflow files working together
-- A markdown file: `day-48-actions-project.md`
-- Screenshot of your full pipeline in action
-
----
-
-## Challenge Tasks
 
 ### Task 1: Set Up the Project Repo
-1. Create a new repo called `github-actions-capstone` (or use your existing `github-actions-practice`)
+1. Create a new repo called [github-actions-capstone](https://github.com/varshaghanghas/github-actions-capstone)
 2. Add a simple app — pick any one:
    - A Python Flask/FastAPI app with one endpoint
    - A Node.js Express app with one endpoint
@@ -27,7 +42,7 @@ This is your GitHub Actions capstone.
 4. Add a `README.md` with a project description
 
 
-Setup project [github-actions-capstone](https://github.com/varshaghanghas/github-actions-capstone) and run commands:
+Setup project `github-actions-capstone` commands:
 
 ```bash
 # install dependencies
@@ -323,7 +338,74 @@ Create `.github/workflows/main-pipeline.yml`:
    - Uses `environment: production` (set this up in repo Settings → Environments)
    - Requires manual approval if you've set up environment protection rules
 
+Create `.github/workflows/main-pipeline.yml` in new branch called `feat/main-pipeline`:
+
+```yml
+name: Production Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # 1. Execute Continuous Integration via Task 2 Reusable Workflow
+  ci-testing:
+    uses: ./.github/workflows/reusable-build-test.yml
+    with:
+      node_version: '20'
+      run_tests: true
+
+  # 2. Package & Deliver Artifact via Task 3 Reusable Workflow (Depends on CI passing)
+  cd-packaging:
+    needs: ci-testing
+    runs-on: ubuntu-latest
+    outputs:
+      short_sha: ${{ steps.vars.outputs.short_sha }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Generates short hash required by the prompt instructions
+      - name: Compute Short Commit Hash
+        id: vars
+        run: echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+  # We invoke the Task 3 Docker compilation workflow using sequential dependencies
+  docker-hub-delivery:
+    needs: cd-packaging
+    uses: ./.github/workflows/reusable-docker.yml
+    with:
+      image_name: "github-actions-capstone"
+      tag: "sha-${{ needs.cd-packaging.outputs.short_sha }}"
+    secrets:
+      docker_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  # 3. Secure Production Release (Depends on Docker Hub pushing successfully)
+  deploy:
+    needs: [cd-packaging, docker-hub-delivery]
+    runs-on: ubuntu-latest
+    
+    # Hooks directly into GitHub Settings -> Environments -> production
+    environment: production
+    
+    steps:
+      - name: Print Deploy Target Summary
+        run: |
+          # Grabs and streams the structured output variable exported from Task 3
+          echo "Deploying image: ${{ needs.docker-hub-delivery.outputs.image_url }} to production"
+
+      - name: Simulate Production Environment Rollout
+        run: |
+          echo "Establishing handshake with cluster nodes..."
+          echo "Rolling out stable container instances..."
+          echo "Deployment phase completed successfully."
+```
+
 **Verify:** Merge a PR to `main` — does it run tests → build Docker → deploy in sequence?
+
+![Output](./img/Picture6.png)
 
 ---
 
@@ -344,6 +426,97 @@ Create `.github/workflows/health-check.yml`:
    echo "- Time: $(date)" >> $GITHUB_STEP_SUMMARY
    ```
 
+`.github/workflows/health-check.yml`:
+
+```yml
+name: Scheduled Health Check
+
+on:
+  schedule:
+    # Executes precisely every 12 hours
+    - cron: '0 */12 * * *'
+  workflow_dispatch: # Enables immediate UI triggering for manual verification
+
+jobs:
+  run-health-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log in to Docker Hub Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Pull Target Image From Hub
+        run: |
+          # Adjust the tag target name if your latest build falls under a different repository tag convention
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-capstone:test-run
+
+      - name: Run Test Container in Detached Mode
+        run: |
+          # Maps host port 8080 to internal Express API port 3000
+          CONTAINER_ID=$(docker run -d -p 8080:3000 ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-capstone:test-run)
+          echo "CONTAINER_ID=$CONTAINER_ID" >> $GITHUB_ENV
+
+          - name: Execute Endpoint Curl Inspection
+          id: inspect_api
+          run: |
+            echo "Checking application health status..."
+            
+            # Initialize variables for the polling loop
+            ATTEMPTS=0
+            MAX_ATTEMPTS=5
+            SUCCESS=false
+  
+            until [ $ATTEMPTS -ge $MAX_ATTEMPTS ]; do
+              echo "Attempt $((ATTEMPTS+1)) of $MAX_ATTEMPTS: Connecting to endpoint..."
+              
+              # Request endpoint with a 2-second timeout per attempt
+              if curl --silent --fail --max-time 2 http://localhost:8080/health; then
+                echo "API structural response check: OK"
+                SUCCESS=true
+                break
+              fi
+              
+              ATTEMPTS=$((ATTEMPTS+1))
+              echo "Endpoint not ready yet. Sleeping 3 seconds..."
+              sleep 3
+            done
+  
+            # Evaluate overall execution status
+            if [ "$SUCCESS" = true ]; then
+              echo "HEALTH_STATUS=PASSED" >> $GITHUB_ENV
+            else
+              echo "API endpoint failed validation or returned a non-200 block after $MAX_ATTEMPTS attempts."
+              echo "HEALTH_STATUS=FAILED" >> $GITHUB_ENV
+              
+              echo "=== Printing Container Logs for Debugging ==="
+              docker logs ${{ env.CONTAINER_ID }}
+              exit 1
+            fi
+
+      - name: Clean Up Isolated Container Resources
+        if: always() # Ensures that cleanup steps run even if the curl execution reports a failure
+        run: |
+          if [ -n "${{ env.CONTAINER_ID }}" ]; then
+            echo "Halting container instance: ${{ env.CONTAINER_ID }}"
+            docker stop ${{ env.CONTAINER_ID }}
+            docker rm ${{ env.CONTAINER_ID }}
+          fi
+
+      - name: Populate Run Report Log
+        if: always()
+        run: |
+          echo "## Health Check Report" >> $GITHUB_STEP_SUMMARY
+          echo "- Image: myapp:latest" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ env.HEALTH_STATUS || 'FAILED' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Time: $(date)" >> $GITHUB_STEP_SUMMARY
+```
+
+Health check passed:
+
+![Output](./img/Picture7.png)
+
 ---
 
 ### Task 7: Add Badges & Documentation
@@ -355,6 +528,8 @@ Create `.github/workflows/health-check.yml`:
    Every 12 hours → health check
    ```
 3. Fill in your notes: What would you add next? (Slack notifications? Multi-environment? Rollback?)
+
+Here is [README.md](https://github.com/varshaghanghas/github-actions-capstone) for Github Actions Capstone Project.
 
 ---
 
