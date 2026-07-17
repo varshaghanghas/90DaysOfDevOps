@@ -1,20 +1,16 @@
 # Day 49 – DevSecOps: Add Security to Your CI/CD Pipeline
 
-## Task
-You can build and deploy automatically. But what if your Docker image has a known vulnerability? What if someone accidentally commits a password? Today you learn **DevSecOps** — adding simple, automated security checks to your pipeline so problems are caught **before** they reach production.
-
-Don't worry — this isn't a security course. You're just adding a few smart steps to the pipeline you already built.
-
----
-
-## Expected Output
-- Security scanning added to your `github-actions-capstone` repo (from Day 48)
-- A markdown file: `day-49-devsecops.md`
-- Screenshot of a security scan running in your pipeline
-
----
-
 ## What is DevSecOps?
+
+DevSecOps stands for Development, Security, and Operations. It’s an approach that ensures security is a shared responsibility across the software lifecycle, not just the job of a separate security team.
+
+Instead of waiting until the final release phase to run vulnerability checks, DevSecOps shifts security left — baking it into code commits, build processes, and automated deployments.
+
+**Why it matters:**
+
+- Early detection = lower remediation cost.
+- Builds trust with stakeholders.
+- Prevents security bottlenecks during production release.
 
 Think of it like this:
 
@@ -24,21 +20,42 @@ Think of it like this:
 **With DevSecOps:**
 > You open a PR → the pipeline automatically checks for vulnerabilities → you fix it before it ever gets merged
 
+![Output](./img/CICD.webp)
+
 **That's it.** DevSecOps = adding security checks to the pipeline you already have. Not a separate process — just a few extra steps.
 
 ---
 
-## Key Principles (Keep These in Mind)
+**DevSecOps Core Tooling Reference Matrix**
 
-1. **Catch problems early** — A vulnerability found in a PR takes 5 minutes to fix. The same vulnerability found in production takes days.
+| Security Layer | Testing Type | What It Analyzes | Popular Open-Source & Commercial Tools |
+| :--- | :--- | :--- | :--- |
+| **Code / Source** | Secret Scanning | API Keys, Tokens, Passwords | GitLeaks, TruffleHog, GitHub Secret Scanning |
+| **Code / Source** | SAST | Proprietary Source Code | Semgrep, SonarQube, Checkmarx, CodeQL |
+| **Commit / Build** | SCA | Open-Source Dependencies | Snyk, Dependabot, OWASP Dependency-Check |
+| **Commit / Build** | IaC Scanning | Infrastructure Configurations | Checkov, TFSec, Kube-score |
+| **Build / Package** | Container Scanning | OS Packages & Image Layers | Trivy, Grype, Clair |
+| **Build / Package** | Signing & Provenance | Build Integrity Validation | Cosign (Sigstore) |
+| **Staging / Test** | DAST | Running Application Endpoints | OWASP ZAP, Burp Suite, Arachni |
+| **Production / Run** | Secrets Management | Runtime Credential Injection | HashiCorp Vault, AWS Secrets Manager |
 
-2. **Automate the checks** — Don't rely on someone remembering to check. Let the pipeline do it every time.
+- **SAST vs. DAST**: SAST checks the raw code from the inside out (white-box), while DAST tests the live running app from the outside in (black-box).
+- **SCA vs. Container Scanning**: SCA looks at your software dependencies (like npm/pip packages), while Container Scanning checks the underlying OS layers (like Alpine/Ubuntu packages) in your Docker image.
+- **Proactive vs. Reactive**: Implementing Secret Scanning with Push Protection catches leaks before they hit your remote repository history, saving you from a painful token revocation cycle.
 
-3. **Block on critical issues** — If a scan finds a serious vulnerability, the pipeline should fail — just like a failing test.
+---
 
-4. **Never put secrets in code** — Use GitHub Secrets (you learned this on Day 44). No `.env` files, no hardcoded API keys.
+## Key Principles (Core Mindset and Rules)
 
-5. **Give only the access needed** — Your workflow doesn't need write access to everything. Limit permissions.
+1. **Fix early, save time** — Catching bugs in a PR takes 5 minutes. Finding them in production takes days.
+
+2. **Trust automation, not memory** — Humans forget checks, but pipelines execute them every single time.
+
+3. **Fail fast on critical issues** — If a severe vulnerability pops up, break the build immediately.
+
+4. **Zero hardcoded secrets** — Use secure environment vaults. Keep .env configs completely out of Git.
+
+5. **Enforce least privilege** — Lock down workflow permissions. Never grant write access unless absolutely necessary.
 
 ---
 
@@ -389,28 +406,3 @@ Instead of storing cloud credentials as long-lived secrets, GitHub Actions can u
 - Dependency review only works on `pull_request` events (not on push)
 - Permissions block goes at the workflow level or the job level
 - GitHub secret scanning is free for public repos
-
----
-
-## Documentation
-Create `day-49-devsecops.md` with:
-- What DevSecOps means in your own words (2-3 sentences)
-- Screenshot of Trivy scan output in your pipeline
-- Your updated pipeline diagram with security steps
-- What you learned about secret scanning and dependency review
-
----
-
-## Submission
-1. Add `day-49-devsecops.md` to `2026/day-49/`
-2. Commit and push to your fork
-
----
-
-## Learn in Public
-Share your pipeline diagram on LinkedIn — "My CI/CD pipeline now scans for vulnerabilities automatically." Simple, powerful, and impressive.
-
-`#90DaysOfDevOps` `#DevOpsKaJosh` `#TrainWithShubham`
-
-Happy Learning!
-**TrainWithShubham**
